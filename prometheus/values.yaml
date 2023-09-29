@@ -1,0 +1,65 @@
+## used by kube_prometheus_stack addon
+
+grafana:
+  serviceAccount:
+    create: true
+    name: "grafana"
+    annotations:
+      eks.amazonaws.com/role-arn: "${grafana_eks_role_arn}"
+  grafana.ini:
+    auth:
+      sigv4_auth_enabled: true
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:        
+      - name: Managed Prometheus
+        type: prometheus
+        url: "${workspace_query_url}"
+        access: proxy
+        isDefault: true
+        jsonData:
+          sigV4Auth: true
+          sigV4Region: "${region}"
+          sigV4AuthType: default 
+  sidecar:
+    datasources:
+      enabled: false
+
+  service:
+    # Enable the image-renderer service
+    enabled: true
+    # image-renderer service port name
+    portName: 'http'
+    # image-renderer service port used by both service and deployment
+    port: 3000
+    targetPort: 3000
+  adminUser: admin
+  adminPassword: admin
+
+prometheus:
+  ## Toggle prometheus into agent mode
+  ## Note many of features described below (e.g. rules, query, alerting, remote read, thanos) will not work in agent mode.
+  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/designs/prometheus-agent.md
+  ##
+  agentMode: true
+
+  ## Service account for Prometheuses to use.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    create: true
+    name: "prometheus"
+    annotations:
+      eks.amazonaws.com/role-arn: "${prometheus_remote_writer_role_arn}"
+
+  ## Settings affecting prometheusSpec
+  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
+  ##
+  prometheusSpec:
+    ## The remote_write spec configuration for Prometheus.
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#remotewritespec
+    remoteWrite:
+    - url: "${workspace_write_url}"
+      sigv4:
+        region: "${region}"    
