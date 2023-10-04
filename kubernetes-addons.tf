@@ -32,10 +32,12 @@ module "eks_blueprints_addons" {
   }
 
   enable_aws_load_balancer_controller    = true
-  enable_metrics_server                  = true
+  # The kube-prometheus stack includes a resource metrics API server, so the metrics-server addon is not necessary.
+  enable_metrics_server                  = false
+  enable_cert_manager                    = true
 #   enable_cluster_autoscaler              = true ## disabled to use karpenter
 
-## BROKEN - this addon version does not configure the service account properly
+## Couldn't investigate how to configure the service account properly
 #   enable_karpenter                       = true
 #   karpenter = {
 #     chart         = "karpenter"
@@ -44,9 +46,30 @@ module "eks_blueprints_addons" {
 #     namespace  = "karpenter"  
 #   }
 
+  enable_kube_prometheus_stack = true
+  kube_prometheus_stack = {
+    name          = "kube-prometheus-stack"
+    chart_version = "51.1.0"
+    repository    = "https://prometheus-community.github.io/helm-charts"
+    namespace     = var.monitoring_namespace
+    values        = [templatefile("${path.module}/prometheus/values.yaml", {
+      region = var.region,
+      grafana_eks_role_arn = aws_iam_role.grafana_eks.arn,
+      workspace_query_url = aws_prometheus_workspace.prometheus_eks.prometheus_endpoint
+      prometheus_remote_writer_role_arn = aws_iam_role.prometheus_remote_writer.arn,
+      workspace_write_url = "${aws_prometheus_workspace.prometheus_eks.prometheus_endpoint}api/v1/remote_write"
+    })]
+  }
+
   tags = {
     Environment = "TESTING EKS"
   }
+
+  depends_on = [
+    aws_iam_role.prometheus_remote_writer,
+    aws_iam_role.grafana_eks,
+    aws_prometheus_workspace.prometheus_eks
+  ]
 }
 
 provider "helm" {

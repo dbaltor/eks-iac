@@ -1,0 +1,29 @@
+## https://github.com/aws/eks-charts/blob/master/stable/aws-for-fluent-bit/values.yaml
+
+serviceAccount:
+  create: true
+  annotations: 
+    eks.amazonaws.com/role-arn: ${role_arn}
+  name: fluent-bit
+
+cloudWatch:
+  enabled: false
+
+cloudWatchLogs:
+  enabled: false
+
+# elasticsearch:
+opensearch:
+  enabled: true
+  match: "*"
+  host: "${domain_endpoint}"
+  awsRegion: "${region}"
+  awsAuth: "On"
+  tls: "On"
+  port: "443"
+  replaceDots: "On"
+  suppressTypeName: "On"
+  index: "elevate-insights" ## create filter for opensearch
+  ## create filter for es 
+  # extraOutputs: |
+  #   Index = my-index
