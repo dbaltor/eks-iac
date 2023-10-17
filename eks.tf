@@ -3,7 +3,7 @@ module "eks" {
   version = "19.16.0"
 
   cluster_name    = local.cluster_name
-  cluster_version = "1.27"
+  cluster_version = "1.28"
   enable_irsa     = true
 
   vpc_id                         = module.vpc.vpc_id
