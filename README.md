@@ -118,3 +118,15 @@ https://github.com/fluent/fluent-bit/issues/2714
   
 I did manage to configure OpenSearch OUTPUT in aws-for-fluent-bit image using the values I found in the repo below:
 https://github.com/kabisa/terraform-aws-eks-cloudwatch/blob/6354db1244b719c31fd862e7142f116d08fcf894/yamls/fluentbit-values.yaml
+
+#### ArgoCD
+
+Great reference:  
+https://www.youtube.com/watch?v=zGndgdGa1Tc  
+
+To deploy the applications use:  
+`./upgrade-apps.sh <version>`  
+(for my-app-1 and my-app-2)  
+  
+`./upgrade-kustomize.sh <name> <env> <version>`  
+(for my-app-3 or my-app-4 into staging or prod)

@@ -1,0 +1,41 @@
+---
+  apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: nginx
+    namespace: argocd
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+  spec:
+    project: default
+    source:
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 15.3.4
+      chart: nginx
+      helm:
+        version: v3
+        releaseName: my-ningx
+        passCredentials: false
+        parameters:
+          - name: "image.tag"
+            value: 1.25.2
+        values: |
+          defaultArgs:
+          - --cert-dir=/tmp
+          - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+          - --kubelet-use-node-status-port
+          - --metric-resolution=15s
+          - --kubelet-insecure-tls
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: nginx
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+      syncOptions:
+        - Validate=true
+        - CreateNamespace=true
+        - PrunePropagationPolicy=foreground
+        - PruneLast=true
