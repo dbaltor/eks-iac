@@ -2,7 +2,9 @@
 
 ## Provisioning an EKS cluster using Terraform
 
-Adapted from https://www.youtube.com/watch?v=KE504NwP9vs
+(Adapted from https://www.youtube.com/watch?v=KE504NwP9vs)  
+
+You need to read [Installing Fluent Bit and connecting to OpenSearch](#installing-fluent-bit-and-connecting-to-opensearch) section before running `terraform apply`.
 
 ### Further References
 
@@ -42,7 +44,15 @@ https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
 
 ## Installing Prometheus Agent and Graphana
 
-Adapted from https://www.youtube.com/watch?v=-nUQNFAX5TI 
+(Adapted from https://www.youtube.com/watch?v=-nUQNFAX5TI)  
+
+This project is going to provision an AWS Managed Prometheus workspace named `prometheus-eks`. It's algo going to deploy Grafana in the cluster.  
+
+To access it, type in on a terminal:
+```
+kubectl -n monitoring port-forward service/kube-prometheus-stack-grafana 3000
+```
+Then open your browse at `http://localhost:3000` and log on with `admin` user and `admin` password.
 
 ### Architecture Overview
 
@@ -84,6 +94,16 @@ https://github.com/prometheus-community/helm-charts/issues/2251#issuecomment-117
 Solving SigV4 authentication issue:  
 https://github.com/prometheus-community/helm-charts/issues/2092#issuecomment-1140317696  
 
+## Installing Fluent Bit and connecting to OpenSearch
+
+This project is going to deploy Fluent Bit in the cluster. To have access to the logs, you need to create  an OpenSearch dashboard on AWS and configure the `opensearch_domain_endpoint` terraform variable with your dashboard's `Domain endpoint`.  
+You can do so by creating a `terraform.tfvars` file with the following content:
+```
+opensearch_domain_endpoint = "<your-domain-endpoint>"
+```
+After running `terraform apply`, go to OpenSearch and look for `elevate-insights` indice.
+
+
 #### Fluent-bit
   
 https://docs.fluentbit.io/manual/installation/kubernetes  
@@ -119,14 +139,25 @@ https://github.com/fluent/fluent-bit/issues/2714
 I did manage to configure OpenSearch OUTPUT in aws-for-fluent-bit image using the values I found in the repo below:
 https://github.com/kabisa/terraform-aws-eks-cloudwatch/blob/6354db1244b719c31fd862e7142f116d08fcf894/yamls/fluentbit-values.yaml
 
-#### ArgoCD
 
-Great reference:  
-https://www.youtube.com/watch?v=zGndgdGa1Tc  
+## Installing ArgoCD
 
-To deploy the applications use:  
+(Apated from https://www.youtube.com/watch?v=zGndgdGa1Tc)  
+
+This project is going to deploy ArgoCD in the cluster.  
+
+To access its console, type in on a terminal:
+```
+kubectl port-forward svc/argocd-server -n argocd 8080:80
+```
+Then open your browse at `http://localhost:8080` and log on with `admin` user. To get the initial random password, type in on a console:
+```
+echo $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+```
+
+To deploy the applications using ArgoCD, run:  
 `./upgrade-apps.sh <version>`  
 (for my-app-1 and my-app-2)  
   
 `./upgrade-kustomize.sh <name> <env> <version>`  
-(for my-app-3 or my-app-4 into staging or prod)
+(for my-app-3 or my-app-4 into staging or prod)  
