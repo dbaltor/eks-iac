@@ -1,4 +1,4 @@
-# EKS provisioning through IaC
+# Provisioning with IaC and Deployment with GitOps
 
 ## Provisioning an EKS cluster using Terraform
 
@@ -97,12 +97,10 @@ https://github.com/prometheus-community/helm-charts/issues/2092#issuecomment-114
 ## Installing Fluent Bit and connecting to OpenSearch
 
 This project is going to deploy Fluent Bit in the cluster. To have access to the logs, you need to create  an OpenSearch dashboard on AWS and configure the `opensearch_domain_endpoint` terraform variable with your dashboard's `Domain endpoint`.  
-You can do so by creating a `terraform.tfvars` file with the following content:
-```
-opensearch_domain_endpoint = "<your-domain-endpoint>"
-```
+
 After running `terraform apply`, go to OpenSearch and look for `elevate-insights` indice.
 
+### References
 
 #### Fluent-bit
   
@@ -161,3 +159,72 @@ To deploy the applications using ArgoCD, run:
   
 `./upgrade-kustomize.sh <name> <env> <version>`  
 (for my-app-3 or my-app-4 into staging or prod)  
+
+
+## Installing ArgoCD Vault Plugin
+
+I've selected AVP because:  
+- it doesn't require developers to manually encript secrets, such as:  
+  *Sealed Secrets* and *SOPs*
+- it doesn't require installing additional components in the cluster, such as:  
+  *ExternalSecrets* and *Secrets Store CSI Driver*
+- it supports different external management solutions (a.k.a. backends). I've picked AWS Secrets Manager.
+  
+### References
+
+https://itnext.io/introducing-argocd-vault-plugin-v1-0-708433294b2d
+
+https://github.com/argoproj-labs/argocd-vault-plugin 
+
+https://github.com/argoproj-labs/argocd-vault-plugin/blob/main/docs/installation.md
+
+https://argocd-vault-plugin.readthedocs.io/en/stable/usage/
+
+https://argocd-vault-plugin.readthedocs.io/en/stable/backends/
+
+https://argocd-vault-plugin.readthedocs.io/en/stable/usage/#running-argocd-vault-plugin-in-a-sidecar-container
+
+https://engineering.lightrun.com/argocd-aws-secrets-manager-3d625aa917f7
+
+ttps://dev.to/luafanti/injecting-secrets-from-vault-into-helm-charts-with-argocd-49k
+
+
+## Deploying Superset
+
+In order to explore some of the advanced features provided by the products used in this repo, I've choosed a complex product to deploy: [Apache Superset](https://superset.apache.org/).
+
+![](./pictures/superset-deployment.png)
+
+All configuration properties are stored [here](https://github.com/dbaltor/argocd-test/blob/master/environments/prod/superset/values.yaml). To access Superset after it has been deployed, add the line below to the `/etc/hosts` file of your machine:
+
+```
+<IP_ADDRESS>   superset.dbaltor.online
+```
+where <IP_ADDRESS> is one of the IP addresses returned by the following command:
+
+```
+kubectl get ingress -n superset -o=jsonpath='{.items[].status.loadBalancer.ingress[].hostname}' | nslookup
+```
+
+You can then point your browser at `https:\\superset.dbaltor.online`.  
+Log in with `admin` user and `admin` password.
+
+### References
+
+#### Superset
+
+https://superset.apache.org/docs/installation/running-on-kubernetes/
+
+https://superset.apache.org/docs/installation/configuring-superset/
+
+https://github.com/apache/superset/blob/master/helm/superset/values.yaml
+
+#### Load balancing on Amazon EKS
+
+https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/how-it-works/ 
+
+https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html 
+
+https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html 
+
+https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/guide/ingress/annotations/

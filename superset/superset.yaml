@@ -1,0 +1,36 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: superset
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://apache.github.io/superset
+    targetRevision: 0.10.15
+    chart: superset
+    helm:
+      version: v3
+      releaseName: si-superset
+      passCredentials: false
+      parameters:
+        - name: "configOverrides{secret.SECRET_KEY}"
+          value: "${superset_secret_key}"
+      valuesFiles:
+        - superset/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: superset
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true

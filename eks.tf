@@ -23,9 +23,11 @@ module "eks" {
       max_size     = 5 # Ignored by Karpenter
       desired_size = 3 # one per az
 
-      # Needed by the aws-ebs-csi-driver
       iam_role_additional_policies = {
+        # Needed by the aws-ebs-csi-driver
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+        # Needed by the ArgoCD Vault Plugin
+        AllowGetSecretsRole = aws_iam_policy.allow_get_secrets_role.arn
       }
     }
   }

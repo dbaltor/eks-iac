@@ -15,4 +15,7 @@ variable "opensearch_domain_endpoint" {
   type        = string
 }
 
-
+variable "smtp_password" {
+  description = "SMTP password to be used by Superset"
+  type        = string
+}

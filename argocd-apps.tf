@@ -216,3 +216,7 @@ resource "kubectl_manifest" "apps_prod" {
 
   depends_on = [helm_release.argocd]
 }
+
+
+
+
