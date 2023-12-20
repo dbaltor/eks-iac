@@ -58,29 +58,30 @@ resource "kubernetes_namespace" "superset" {
 #   depends_on = [helm_release.argocd]
 # }
 
-resource "kubernetes_namespace" "superset" {
-  metadata {
-    name = "superset"
-  }
-}
+# # Used when deploying postgres with Superset
+# resource "kubernetes_namespace" "superset" {
+#   metadata {
+#     name = "superset"
+#   }
+# }
 
-# PostgreSQL password K8s secret
-resource "kubernetes_secret" "superset_postgres" {
-  metadata {
-    name = "superset-postgres"
-    namespace = "superset"
-  }
+# PostgreSQL password K8s secret (used when deploying postgres with Superset)
+# resource "kubernetes_secret" "superset_postgres" {
+#   metadata {
+#     name = "superset-postgres"
+#     namespace = "superset"
+#   }
 
-  data = {
-    password = random_password.superset_postgresql_password.result
-    postgres-password = random_password.superset_postgresql_password.result
-  }
+#   data = {
+#     password = random_password.superset_postgresql_password.result
+#     postgres-password = random_password.superset_postgresql_password.result
+#   }
 
-  depends_on = [
-    kubernetes_namespace.superset,
-    aws_secretsmanager_secret_version.superset_secrets
-  ]
-}
+#   depends_on = [
+#     kubernetes_namespace.superset,
+#     aws_secretsmanager_secret_version.superset_secrets
+#   ]
+# }
 
 resource "aws_acm_certificate" "superset" {
   private_key      = tls_private_key.superset_ingress_tls_key.private_key_pem
@@ -130,6 +131,7 @@ resource "kubectl_manifest" "superset_helm" {
   depends_on = [
     kubernetes_namespace.superset,
     helm_release.argocd,
-    kubernetes_secret.superset_postgres
+    aws_db_instance.superset
+    # kubernetes_secret.superset_postgres
   ]
 }

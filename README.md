@@ -228,3 +228,12 @@ https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
 https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html 
 
 https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/guide/ingress/annotations/
+https://dev.to/luafanti/injecting-secrets-from-vault-into-helm-charts-with-argocd-49k
+
+## Provisioning AWS RDS
+
+I've selected RDS for PostgreSQL.  
+
+https://developer.hashicorp.com/terraform/tutorials/aws/aws-rds
+
+https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string
