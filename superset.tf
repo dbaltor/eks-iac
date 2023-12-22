@@ -28,6 +28,7 @@ locals {
       secret-key = random_password.superset_secret_key.result
       postgresql-password = random_password.superset_postgresql_password.result
       smtp-password = var.smtp_password
+      alb-cert-arn = aws_acm_certificate.superset.arn
     }
   )
 }
@@ -36,6 +37,7 @@ resource "aws_secretsmanager_secret_version" "superset_secrets" {
   secret_id     = aws_secretsmanager_secret.superset.id
   secret_string = jsonencode(local.superset_secrets)
 }
+
 
 ################################
 # Superset
@@ -58,12 +60,57 @@ resource "kubernetes_namespace" "superset" {
 #   depends_on = [helm_release.argocd]
 # }
 
-# # Used when deploying postgres with Superset
+resource "tls_private_key" "superset_ingress_tls_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "tls_self_signed_cert" "superset_ingress_tls_cert" {
+  private_key_pem = tls_private_key.superset_ingress_tls_key.private_key_pem
+
+  subject {
+    country             = "UK"
+    common_name         = "superset.dbaltor.online"
+  }
+
+  validity_period_hours = 1825 //  1825 days or 5 years
+
+  allowed_uses = [
+    "digital_signature",
+    "cert_signing",
+    "crl_signing",
+  ]
+}
+
+resource "aws_acm_certificate" "superset" {
+  private_key      = tls_private_key.superset_ingress_tls_key.private_key_pem
+  certificate_body = tls_self_signed_cert.superset_ingress_tls_cert.cert_pem
+}
+
+# Used when creating the TLS secret
 # resource "kubernetes_namespace" "superset" {
 #   metadata {
 #     name = "superset"
 #   }
 # }
+
+# TLS secret used when enabling TLS to the ingress
+# resource "kubernetes_secret" "superset_ingress_tls" {
+#     metadata {
+#       name = "superset-ingress-tls"
+#       namespace = "superset"
+#     }
+
+#     data = {
+#       "tls.crt" = tls_self_signed_cert.superset_ingress_tls_cert.cert_pem
+#       "tls.key" = tls_private_key.superset_ingress_tls_key.private_key_pem
+#     }
+
+#     type = "kubernetes.io/tls"
+
+#     depends_on = [kubernetes_namespace.superset]
+#   }
+
 
 # PostgreSQL password K8s secret (used when deploying postgres with Superset)
 # resource "kubernetes_secret" "superset_postgres" {
@@ -82,11 +129,6 @@ resource "kubernetes_namespace" "superset" {
 #     aws_secretsmanager_secret_version.superset_secrets
 #   ]
 # }
-
-resource "aws_acm_certificate" "superset" {
-  private_key      = tls_private_key.superset_ingress_tls_key.private_key_pem
-  certificate_body = tls_self_signed_cert.superset_ingress_tls_cert.cert_pem
-}
 
 # TLS secret used when enabling TLS to the ingress
 # resource "kubernetes_secret" "superset_ingress_tls" {
@@ -131,7 +173,8 @@ resource "kubectl_manifest" "superset_helm" {
   depends_on = [
     kubernetes_namespace.superset,
     helm_release.argocd,
-    aws_db_instance.superset
-    # kubernetes_secret.superset_postgres
+    aws_db_instance.superset,
+    aws_acm_certificate.superset,
+    # kubernetes_secret.superset_ingress_tls
   ]
 }
