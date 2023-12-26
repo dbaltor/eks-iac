@@ -4,6 +4,8 @@
 
 (Adapted from https://www.youtube.com/watch?v=KE504NwP9vs)  
 
+**Please notice that this repo installs AWS resources beyond the Free Tier.**  
+  
 You need to read [Installing Fluent Bit and connecting to OpenSearch](#installing-fluent-bit-and-connecting-to-opensearch) section before running `terraform apply`.
 
 ### Further References
