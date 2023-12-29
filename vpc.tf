@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 provider "aws" {
   region = var.region
 }
@@ -34,13 +36,12 @@ module "vpc" {
   one_nat_gateway_per_az = false ## suggested by Anton
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "owned"
     "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "owned"
     "kubernetes.io/role/internal-elb"             = 1
+    "karpenter.sh/discovery" = local.cluster_name
   }
 }
 
