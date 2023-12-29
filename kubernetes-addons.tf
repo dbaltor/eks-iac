@@ -1,6 +1,6 @@
 module "eks_blueprints_addons" {
   source = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.7.2"
+  version = "1.12.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -36,15 +36,6 @@ module "eks_blueprints_addons" {
   enable_metrics_server                  = false
   enable_cert_manager                    = true
 #   enable_cluster_autoscaler              = true ## disabled to use karpenter
-
-## Couldn't investigate how to configure the service account properly
-#   enable_karpenter                       = true
-#   karpenter = {
-#     chart         = "karpenter"
-#     chart_version = "v0.30.0"
-#     repository    = "oci://public.ecr.aws/karpenter"
-#     namespace  = "karpenter"  
-#   }
 
   enable_kube_prometheus_stack = true
   kube_prometheus_stack = {
