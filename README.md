@@ -19,6 +19,20 @@ https://aws-quickstart.github.io/cdk-eks-blueprints/addons/cluster-autoscaler/
 Why Karpenter:  
 https://www.youtube.com/watch?v=C-2v7HT-uSA  
 
+[Karpenter graduates to beta | Amazon Web Services](https://aws.amazon.com/blogs/containers/karpenter-graduates-to-beta/)
+
+[NodeClasses](https://karpenter.sh/docs/concepts/nodeclasses/)
+
+[NodePools](https://karpenter.sh/docs/concepts/nodepools/)
+
+[General purpose node class](https://github.com/aws/karpenter-provider-aws/blob/main/examples/v1beta1/general-purpose.yaml)
+
+[helm values.yaml](https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/values.yaml)
+
+[v1beta1-controller-policy.json](https://github.com/aws/karpenter-provider-aws/blob/main/website/content/en/preview/upgrading/v1beta1-controller-policy.json)
+
+[Karpenter terraform module example](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/karpenter/main.tf)
+
 EKS Blueprints for Terraform v5:  
 https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/motivation/  
 
