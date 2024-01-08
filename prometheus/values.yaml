@@ -36,6 +36,15 @@ grafana:
     targetPort: 3000
   adminUser: admin
   adminPassword: admin
+  ingress:
+    enabled: true
+    annotations:
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/certificate-arn: "${eks_cluster_certificate_arn}"
+    ingressClassName: alb
+    hosts:
+      - grafana.dbaltor.online
 
 prometheus:
   ## Toggle prometheus into agent mode
