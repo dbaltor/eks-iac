@@ -88,8 +88,12 @@ resource "helm_release" "argocd" {
   version          = "3.35.4"
   values = [templatefile("argocd/values.yaml", {
     argocd_image_version = "v2.9.3",
-    region = var.region
+    region = var.region,
+    eks_cluster_certificate_arn = aws_acm_certificate.eks_cluster_certificate.arn,
+    argocd_url = "argocd.dbaltor.online"
   })]
 
-    depends_on = [kubectl_manifest.cmp_plugin]
+    depends_on = [
+      kubectl_manifest.cmp_plugin,
+      aws_acm_certificate.eks_cluster_certificate]
 }
