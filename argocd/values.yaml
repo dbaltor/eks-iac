@@ -5,6 +5,17 @@ global:
 server:
   extraArgs:
     - --insecure
+  ingress:
+    enabled: true
+    annotations:
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/certificate-arn: "${eks_cluster_certificate_arn}"
+    ingressClassName: alb
+    hosts:
+      - "${argocd_url}"
+  config:
+    url: "${argocd_url}"
 
 # If you face issue with ArgoCD CRDs installation, then uncomment below section to disable it
 # crds:
@@ -36,7 +47,6 @@ repoServer:
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
-
   extraContainers:
     - name: avp-helm
       command: [/var/run/argocd/argocd-cmp-server]
@@ -61,7 +71,6 @@ repoServer:
         - name: custom-tools
           subPath: argocd-vault-plugin
           mountPath: /usr/local/bin/argocd-vault-plugin
-
   volumes:
     - configMap:
         name: cmp-plugin
