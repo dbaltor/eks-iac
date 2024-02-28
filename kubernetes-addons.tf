@@ -1,6 +1,6 @@
 module "eks_blueprints_addons" {
   source = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.12.0"
+  version = "1.15.1"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -40,7 +40,7 @@ module "eks_blueprints_addons" {
   enable_kube_prometheus_stack = true
   kube_prometheus_stack = {
     name          = "kube-prometheus-stack"
-    chart_version = "51.1.0"
+    chart_version = "56.13.1"
     repository    = "https://prometheus-community.github.io/helm-charts"
     namespace     = var.monitoring_namespace
     values        = [templatefile("${path.module}/prometheus/values.yaml", {
