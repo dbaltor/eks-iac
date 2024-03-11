@@ -43,10 +43,9 @@ module "eks_blueprints_addons" {
     chart_version = "56.13.1"
     repository    = "https://prometheus-community.github.io/helm-charts"
     namespace     = var.monitoring_namespace
-    values        = [templatefile("${path.module}/prometheus/values.yaml", {
+    values        = [templatefile("${path.module}/monitoring/values.yaml", {
       region = var.region,
       grafana_eks_role_arn = aws_iam_role.grafana_eks.arn,
-      workspace_query_url = aws_prometheus_workspace.prometheus_eks.prometheus_endpoint
       prometheus_remote_writer_role_arn = aws_iam_role.prometheus_remote_writer.arn,
       workspace_write_url = "${aws_prometheus_workspace.prometheus_eks.prometheus_endpoint}api/v1/remote_write",
       eks_cluster_certificate_arn = aws_acm_certificate.eks_cluster_certificate.arn

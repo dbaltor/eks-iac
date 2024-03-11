@@ -9,22 +9,9 @@ grafana:
   grafana.ini:
     auth:
       sigv4_auth_enabled: true
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:        
-      - name: Managed Prometheus
-        type: prometheus
-        url: "${workspace_query_url}"
-        access: proxy
-        isDefault: true
-        jsonData:
-          sigV4Auth: true
-          sigV4Region: "${region}"
-          sigV4AuthType: default 
   sidecar:
     datasources:
-      enabled: false
+      defaultDatasourceEnabled: false
 
   service:
     # Enable the image-renderer service
