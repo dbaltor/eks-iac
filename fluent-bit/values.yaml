@@ -23,7 +23,7 @@ opensearch:
   port: "443"
   replaceDots: "On"
   suppressTypeName: "On"
-  index: "elevate-insights" ## create filter for opensearch
+  index: "poc-eks" ## create filter for opensearch
   ## create filter for es 
   # extraOutputs: |
   #   Index = my-index
