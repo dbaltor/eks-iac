@@ -4,9 +4,13 @@
 
 (Adapted from https://www.youtube.com/watch?v=KE504NwP9vs)  
 
+Disclaimer:
 **Please notice that this repo installs AWS resources beyond the Free Tier.**  
   
-You need to read [Installing Fluent Bit and connecting to OpenSearch](#installing-fluent-bit-and-connecting-to-opensearch) section before running `terraform apply`.
+You need to read the [Installing Fluent Bit and connecting to OpenSearch](#installing-fluent-bit-and-connecting-to-opensearch) section before starting.
+
+- to provision the environment, run `scripts/provision.sh`
+- to destroy the environment, run `scripts/destroy.sh`
 
 ### Further References
 
@@ -62,7 +66,7 @@ https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
 
 (Adapted from https://www.youtube.com/watch?v=-nUQNFAX5TI)  
 
-This project is going to provision an AWS Managed Prometheus workspace named `prometheus-eks`. It's algo going to deploy Grafana in the cluster.  
+This project is going to provision an AWS Managed Prometheus workspace named `prometheus-eks`. It's algo going to deploy Grafana to the cluster.
 
 To access it, type in on a terminal:
 ```
@@ -112,9 +116,9 @@ https://github.com/prometheus-community/helm-charts/issues/2092#issuecomment-114
 
 ## Installing Fluent Bit and connecting to OpenSearch
 
-This project is going to deploy Fluent Bit in the cluster. To have access to the logs, you need to create  an OpenSearch dashboard on AWS and configure the `opensearch_domain_endpoint` terraform variable with your dashboard's `Domain endpoint`.  
+This project is going to deploy Fluent Bit to the cluster. To have access to the logs, you need to create  an OpenSearch dashboard on AWS and configure the `opensearch_domain_endpoint` terraform variable with your dashboard's `Domain endpoint`.  
 
-After running `terraform apply`, go to OpenSearch and look for `elevate-insights` indice.
+After running `scripts/provision.sh`, go to OpenSearch and look for `poc-eks` indice.
 
 ### References
 
@@ -158,7 +162,7 @@ https://github.com/kabisa/terraform-aws-eks-cloudwatch/blob/6354db1244b719c31fd8
 
 (Apated from https://www.youtube.com/watch?v=zGndgdGa1Tc)  
 
-This project is going to deploy ArgoCD in the cluster.  
+This project is going to deploy ArgoCD to the cluster.
 
 To access its console, type in on a terminal:
 ```
@@ -180,9 +184,9 @@ To deploy the applications using ArgoCD, run:
 ## Installing ArgoCD Vault Plugin
 
 I've selected AVP because:  
-- it doesn't require developers to manually encript secrets, such as:  
-  *Sealed Secrets* and *SOPs*
-- it doesn't require installing additional components in the cluster, such as:  
+- it doesn't require developers to manually encript secrets, such as:
+ *Sealed Secrets* and *SOPs*
+- it doesn't require installing additional components to the cluster, such as:  
   *ExternalSecrets* and *Secrets Store CSI Driver*
 - it supports different external management solutions (a.k.a. backends). I've picked AWS Secrets Manager.
   

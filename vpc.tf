@@ -14,14 +14,14 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  cluster_name = "elevate-insights-eks"
+  cluster_name = "poc-eks"
 }
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"
 
-  name = "elevate-insights-vpc"
+  name = "poc-vpc"
   cidr = "10.0.0.0/16"
 
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
