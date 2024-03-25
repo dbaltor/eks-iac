@@ -221,14 +221,14 @@ ttps://dev.to/luafanti/injecting-secrets-from-vault-into-helm-charts-with-argocd
 
 ## Deploying Superset
 
-In order to explore some of the advanced features provided by the products used in this repo, I've choosed a complex product to deploy: [Apache Superset](https://superset.apache.org/).
+In order to explore some of the advanced features provided by the products used in this repo, I've choosed to deploy a complex product: [Apache Superset](https://superset.apache.org/).
 
 ![](./pictures/superset-deployment.png)
 
 All configuration properties are stored [here](https://github.com/dbaltor/argocd-test/blob/master/environments/prod/superset/values.yaml). To access Superset after it has been deployed, add the line below to the `/etc/hosts` file of your machine:
 
 ```
-<IP_ADDRESS>   superset.dbaltor.online
+<IP_ADDRESS>   superset.<dns_domain>
 ```
 where <IP_ADDRESS> is one of the IP addresses returned by the following command:
 
@@ -236,7 +236,7 @@ where <IP_ADDRESS> is one of the IP addresses returned by the following command:
 kubectl get ingress -n superset -o=jsonpath='{.items[].status.loadBalancer.ingress[].hostname}' | nslookup
 ```
 
-You can then point your browser at `https:\\superset.dbaltor.online`.  
+You can then point your browser at `https:\\superset.<DNS_DOMAIN>`.  
 Log in with `admin` user and `admin` password.
 
 ### References

@@ -31,7 +31,7 @@ grafana:
       alb.ingress.kubernetes.io/certificate-arn: "${eks_cluster_certificate_arn}"
     ingressClassName: alb
     hosts:
-      - grafana.dbaltor.online
+      - "grafana.${dns_domain}"
 
 prometheus:
   ## Toggle prometheus into agent mode

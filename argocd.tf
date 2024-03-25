@@ -90,7 +90,7 @@ resource "helm_release" "argocd" {
     argocd_image_version = "v2.9.3",
     region = var.region,
     eks_cluster_certificate_arn = aws_acm_certificate.eks_cluster_certificate.arn,
-    argocd_url = "argocd.dbaltor.online"
+    argocd_url = "argocd.${var.dns_domain}"
   })]
 
     depends_on = [
