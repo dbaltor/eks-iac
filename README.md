@@ -116,47 +116,57 @@ https://github.com/prometheus-community/helm-charts/issues/2092#issuecomment-114
 
 ## Installing Fluent Bit and connecting to OpenSearch
 
-This project is going to deploy Fluent Bit to the cluster. To have access to the logs, you need to create  an OpenSearch dashboard on AWS and configure the `opensearch_domain_endpoint` terraform variable with your dashboard's `Domain endpoint`.  
+This project is going to deploy Fluent Bit to the cluster. To have access to the logs, you need to create an OpenSearch domain on AWS and configure the `opensearch_domain` TF variable with your `Domain endpoint` without the schema (`https://`).  
 
-After running `scripts/provision.sh`, go to OpenSearch and look for `poc-eks` indice.
+After running `scripts/provision.sh`, go to your OpenSearch dashboard and look for `poc-eks` indice.
 
 ### References
 
 #### Fluent-bit
   
-https://docs.fluentbit.io/manual/installation/kubernetes  
+https://docs.fluentbit.io/manual/installation/kubernetes
   
-https://aws.amazon.com/blogs/containers/kubernetes-logging-powered-by-aws-for-fluent-bit/  
+https://aws.amazon.com/blogs/containers/kubernetes-logging-powered-by-aws-for-fluent-bit/
   
-https://www.youtube.com/watch?v=KJlWV5-o8v0  
+https://www.youtube.com/watch?v=KJlWV5-o8v0
   
-https://www.studytonight.com/post/configure-fluent-bit-with-aws-elasticsearch-service  
-  
-https://github.com/aws/aws-for-fluent-bit/issues/286  
-  
-https://docs.fluentbit.io/manual/pipeline/outputs/opensearch  
-  
-https://docs.aws.amazon.com/opensearch-service/latest/developerguide/configure-client-fluentbit.html  
+[Fluent-bit via Terraform](https://www.youtube.com/watch?v=kUyLghPG2AI)
+
+https://github.com/aws/aws-for-fluent-bit/issues/286
   
 Fluent-bit helm values:  
-https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml  
-  
-aws-for-fluent-bit helm values:  
-https://github.com/aws/eks-charts/blob/master/stable/aws-for-fluent-bit/README.md  
-  
-Fluent-bit via Terraform:  
-https://www.youtube.com/watch?v=kUyLghPG2AI  
-https://github.com/quickbooks2018/terraform-aws-eks-logging/blob/79f8a96616d0239d7df28685acdc2747c622578f/main.tf  
-  
-https://www.youtube.com/watch?v=E_P4EqJQ-T0
-https://github.com/raj13aug/eks-fluentbit/blob/c433853899994ddb54d2782d6be804a9731d94f5/main.tf  
-  
-Couldn't use OpenSearch OUTPUT due to the error below:
-https://github.com/fluent/fluent-bit/issues/2714  
-  
-I did manage to configure OpenSearch OUTPUT in aws-for-fluent-bit image using the values I found in the repo below:
-https://github.com/kabisa/terraform-aws-eks-cloudwatch/blob/6354db1244b719c31fd862e7142f116d08fcf894/yamls/fluentbit-values.yaml
+https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml
 
+aws-for-fluent-bit helm values:  
+https://github.com/aws/eks-charts/blob/master/stable/aws-for-fluent-bit/README.md
+  
+
+https://github.com/aws/aws-for-fluent-bit/blob/mainline/ecs/amazon-es.conf
+
+https://github.com/quickbooks2018/terraform-aws-eks-logging/blob/79f8a96616d0239d7df28685acdc2747c622578f/main.tf
+
+https://github.com/raj13aug/eks-fluentbit/blob/c433853899994ddb54d2782d6be804a9731d94f5/main.tf
+
+
+https://www.studytonight.com/post/configure-fluent-bit-with-aws-elasticsearch-service
+
+https://www.youtube.com/watch?v=E_P4EqJQ-T0
+
+#### OpenSearch
+
+[OpenSearchIdentity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html)
+
+[Fine-grained access control in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html)
+
+https://docs.fluentbit.io/manual/pipeline/outputs/opensearch
+
+[Using an OpenSearch Ingestion pipeline with Fluent Bit](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/configure-client-fluentbit.html)
+
+Couldn't use OpenSearch OUTPUT due to the error below:  
+https://github.com/fluent/fluent-bit/issues/2714
+  
+I did manage to configure OpenSearch OUTPUT in aws-for-fluent-bit image using the values I found in the repo below:  
+https://github.com/kabisa/terraform-aws-eks-cloudwatch/blob/6354db1244b719c31fd862e7142f116d08fcf894/yamls/fluentbit-values.yaml
 
 ## Installing ArgoCD
 
