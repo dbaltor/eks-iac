@@ -116,7 +116,13 @@ https://github.com/prometheus-community/helm-charts/issues/2092#issuecomment-114
 
 ## Installing Fluent Bit and connecting to OpenSearch
 
-This project is going to deploy Fluent Bit to the cluster. To have access to the logs, you need to create an OpenSearch domain on AWS and configure the `opensearch_domain` TF variable with your `Domain endpoint` without the schema (`https://`).  
+This project is going to deploy Fluent Bit to the cluster. To have access to the logs, you need to create an OpenSearch domain on AWS and configure: 
+- the `opensearch_domain` TF variable with your `Domain endpoint` without the schema (`https://`)
+- the `opensearch_arn` TF variable with your OpenSearch domain ARN  
+
+Don't forget to give the IAM role being used by Fluent Bit the proper access rights in the OpenSearch console if you are using [Fine-grained access control](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html).
+
+![](./pictures/opensearch-fluentbit-permissions.png)
 
 After running `scripts/provision.sh`, go to your OpenSearch dashboard and look for `poc-eks` indice.
 

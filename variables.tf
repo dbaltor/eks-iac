@@ -15,8 +15,13 @@ variable "monitoring_namespace" {
   default     = "monitoring"
 }
 
-variable "opensearch_domain_endpoint" {
-  description = "OpenSearch domain endpoint"
+variable "opensearch_domain" {
+  description = "OpenSearch domain endpoint without schema (https://)"
+  type        = string
+}
+
+variable "opensearch_arn" {
+  description = "OpenSearch domain ARN"
   type        = string
 }
 
