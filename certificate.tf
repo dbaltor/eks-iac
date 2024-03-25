@@ -8,7 +8,7 @@ resource "tls_self_signed_cert" "eks_cluster_ingress_tls_cert" {
 
   subject {
     country             = "UK"
-    common_name         = "*.dbaltor.online"
+    common_name         = "*.${var.dns_domain}"
   }
 
   validity_period_hours = 1825 //  1825 days or 5 years

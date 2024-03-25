@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: api.dbaltor.online
+    - host: api.YOUR_DNS_DOMAIN
       http:
         paths:
           - path: /

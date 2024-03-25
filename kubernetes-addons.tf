@@ -45,6 +45,7 @@ module "eks_blueprints_addons" {
     namespace     = var.monitoring_namespace
     values        = [templatefile("${path.module}/monitoring/values.yaml", {
       region = var.region,
+      dns_domain = var.dns_domain,
       grafana_eks_role_arn = aws_iam_role.grafana_eks.arn,
       prometheus_remote_writer_role_arn = aws_iam_role.prometheus_remote_writer.arn,
       workspace_write_url = "${aws_prometheus_workspace.prometheus_eks.prometheus_endpoint}api/v1/remote_write",
