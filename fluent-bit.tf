@@ -43,7 +43,7 @@ resource "aws_iam_policy" "es_domain_access" {
           "es:*"
         ]
         Effect   = "Allow"
-        Resource = "*"
+        Resource = "${var.opensearch_arn}/*"
       }
     ]
   })
@@ -62,9 +62,10 @@ resource "helm_release" "fluent_bit" {
   namespace  = var.monitoring_namespace
 
   values = [templatefile("${path.module}/fluent-bit/values.yaml", {
-      role_arn = aws_iam_role.fluent_bit.arn,
-      region = var.region,
-      domain_endpoint = var.opensearch_domain_endpoint
+      role_arn = aws_iam_role.fluent_bit.arn
+      region = var.region
+      domain_endpoint = var.opensearch_domain
+      index = local.cluster_name
   })]
 
   depends_on = [
