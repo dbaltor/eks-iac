@@ -19,12 +19,12 @@ data "aws_iam_policy_document" "allow_assume_web_identity" {
 
 resource "aws_iam_role" "prometheus_remote_writer" {
   assume_role_policy = data.aws_iam_policy_document.allow_assume_web_identity.json
-  name               = "prometheus-remote-writer"
+  name               = "${local.cluster_name}-prometheus-remote-writer"
 }
 
 
 resource "aws_iam_policy" "prometheus_eks_ingest_access" {
-  name = "PrometheusEKSIngestAccess"
+  name = "${local.cluster_name}-PrometheusEKSIngestAccess"
 
   policy = jsonencode({
     Statement = [{
