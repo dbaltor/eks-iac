@@ -16,12 +16,12 @@ data "aws_iam_policy_document" "grafana_eks" {
   }
 }
 
-resource "aws_iam_role" "grafana_eks" {
+resource "aws_iam_role" "eks_grafana" {
   assume_role_policy = data.aws_iam_policy_document.grafana_eks.json
-  name               = "grafana-eks"
+  name               = "${local.cluster_name}-eks-grafana"
 }
 
 resource "aws_iam_role_policy_attachment" "grafana_eks_query_access" {
-  role       = aws_iam_role.grafana_eks.name
+  role       = aws_iam_role.eks_grafana.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess"
 }

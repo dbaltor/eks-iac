@@ -44,11 +44,11 @@ module "eks_blueprints_addons" {
     repository    = "https://prometheus-community.github.io/helm-charts"
     namespace     = var.monitoring_namespace
     values        = [templatefile("${path.module}/monitoring/values.yaml", {
-      region = var.region,
-      dns_domain = var.dns_domain,
-      grafana_eks_role_arn = aws_iam_role.grafana_eks.arn,
-      prometheus_remote_writer_role_arn = aws_iam_role.prometheus_remote_writer.arn,
-      workspace_write_url = "${aws_prometheus_workspace.prometheus_eks.prometheus_endpoint}api/v1/remote_write",
+      region = var.region
+      dns_domain = var.dns_domain
+      grafana_eks_role_arn = aws_iam_role.eks_grafana.arn
+      prometheus_remote_writer_role_arn = aws_iam_role.prometheus_remote_writer.arn
+      workspace_write_url = "${aws_prometheus_workspace.prometheus_eks.prometheus_endpoint}api/v1/remote_write"
       eks_cluster_certificate_arn = aws_acm_certificate.eks_cluster_certificate.arn
     })]
   }
@@ -59,7 +59,6 @@ module "eks_blueprints_addons" {
 
   depends_on = [
     aws_iam_role.prometheus_remote_writer,
-    aws_iam_role.grafana_eks,
     aws_prometheus_workspace.prometheus_eks
   ]
 }
