@@ -40,7 +40,7 @@ module "eks_blueprints_addons" {
   enable_kube_prometheus_stack = true
   kube_prometheus_stack = {
     name          = "kube-prometheus-stack"
-    chart_version = "56.13.1"
+    chart_version = "57.2.1"
     repository    = "https://prometheus-community.github.io/helm-charts"
     namespace     = var.monitoring_namespace
     values        = [templatefile("${path.module}/monitoring/values.yaml", {
