@@ -22,7 +22,7 @@ resource "helm_release" "karpenter" {
   name                = "karpenter"
   repository          = "oci://public.ecr.aws/karpenter"
   chart               = "karpenter"
-  version             = "v0.34.0"
+  version             = "0.35.4"
 
   set {
     name  = "settings.clusterName"
