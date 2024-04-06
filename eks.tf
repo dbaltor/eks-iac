@@ -1,10 +1,34 @@
+locals {
+  aws_auth_roles = [
+    {
+      rolearn  = aws_iam_role.developer.arn
+      username = "developer"
+      groups   = ["reader"]
+    },
+  ]
+
+  aws_auth_configmap_data = {
+    mapRoles    = yamlencode(local.aws_auth_roles)
+  }
+}
+
+resource "kubernetes_config_map_v1_data" "aws_auth" {
+  force = true
+
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = local.aws_auth_configmap_data
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.21.0"
+  version = "20.8.4"
 
   cluster_name    = local.cluster_name
   cluster_version = "1.29"
-  enable_irsa     = true
 
   vpc_id                         = module.vpc.vpc_id
   subnet_ids                     = module.vpc.private_subnets
@@ -32,23 +56,9 @@ module "eks" {
     }
   }
 
-  manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    # We need to add in the Karpenter node IAM role for nodes launched by Karpenter
-    {
-      rolearn  = module.karpenter.role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-    },
-    {
-      rolearn  = aws_iam_role.developer.arn
-      username = "developer"
-      groups   = ["reader"]
-    },
-  ]
+  # Gives Terraform identity admin access to cluster which will
+  # allow deploying resources (Karpenter) into the cluster
+  enable_cluster_creator_admin_permissions = true
 
     tags = {
       Environment = "POC EKS"
