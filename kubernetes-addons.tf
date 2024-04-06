@@ -54,7 +54,7 @@ module "eks_blueprints_addons" {
   }
 
   tags = {
-    Environment = "TESTING EKS"
+    Environment = "POC EKS"
   }
 
   depends_on = [

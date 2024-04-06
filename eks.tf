@@ -51,9 +51,10 @@ module "eks" {
   ]
 
     tags = {
-    # NOTE - if creating multiple security groups with this module, only tag the
-    # security group that Karpenter should utilize with the following tag
-    # (i.e. - at most, only one security group should have this tag in your account)
-    "karpenter.sh/discovery" = local.cluster_name
+      Environment = "POC EKS"
+      # NOTE - if creating multiple security groups with this module, only tag the
+      # security group that Karpenter should utilize with the following tag
+      # (i.e. - at most, only one security group should have this tag in your account)
+      "karpenter.sh/discovery" = local.cluster_name
   }
 }

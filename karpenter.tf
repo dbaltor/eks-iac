@@ -136,7 +136,7 @@ module "karpenter" {
   }
 
   tags = {
-    Environment = "TESTING EKS"
+    Environment = "POC EKS"
   }
 }
 
