@@ -26,7 +26,7 @@ module "eks_blueprints_addons" {
   enable_aws_efs_csi_driver = true
   aws_efs_csi_driver = {
     chart         = "aws-efs-csi-driver"
-    chart_version = "2.4.9"
+    chart_version = "2.5.7"
     repository    = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
     namespace  = "kube-system"    
   }
