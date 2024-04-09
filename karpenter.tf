@@ -13,6 +13,8 @@ module "karpenter" {
   tags = {
     Environment = "POC EKS"
   }
+
+  depends_on = [ module.eks ]
 }
 
 resource "helm_release" "karpenter" {
@@ -43,6 +45,8 @@ resource "helm_release" "karpenter" {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = module.karpenter.iam_role_arn
   }
+
+  depends_on = [ module.karpenter ]
 }
 
 resource "kubectl_manifest" "karpenter_node_class" {

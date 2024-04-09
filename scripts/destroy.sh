@@ -20,6 +20,9 @@ case ${answer:0:1} in
     ;;
 esac
 
+cd $(dirname $0)
+cd ..
+
 # remove apps deployed by argocd
 terraform destroy -auto-approve -target kubectl_manifest.my_app_staging \
 -target kubectl_manifest.my_app_prod \
@@ -28,16 +31,24 @@ terraform destroy -auto-approve -target kubectl_manifest.my_app_staging \
 -target kubectl_manifest.apps_staging \
 -target kubectl_manifest.apps_prod \
 -target kubernetes_namespace.superset
+echo "Waiting 30 seconds..."
+sleep 30
 
 # remove argocd itself
 terraform destroy -auto-approve -target kubernetes_namespace.argocd
+echo "Waiting 30 seconds..."
+sleep 30
 
 # remove prometheus and grafana
 terraform destroy -auto-approve --target module.eks_blueprints_addons.module.kube_prometheus_stack.helm_release.this[0]
-sleep 60
+echo "Waiting 30 seconds..."
+sleep 30
 
 # destroy everything else
-terraform destroy -auto-approve
+until terraform destroy -auto-approve; do
+  echo Terraform destroy has failed, retrying in 10 seconds...
+  sleep 10
+done
 
 # force secret deletion so the name can be immediatelly reused
 AWS_PAGER="" aws secretsmanager delete-secret --secret-id prod/superset --force-delete-without-recovery --region $(aws configure get region)

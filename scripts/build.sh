@@ -5,6 +5,9 @@
 #!/bin/bash
 set -eu
 
+cd $(dirname $0)
+cd ..
+
 terraform init
 until terraform apply -auto-approve; do
   echo Terraform apply has failed, retrying in 10 seconds...

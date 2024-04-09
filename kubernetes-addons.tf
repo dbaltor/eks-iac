@@ -57,10 +57,7 @@ module "eks_blueprints_addons" {
     Environment = "POC EKS"
   }
 
-  depends_on = [
-    aws_iam_role.prometheus_remote_writer,
-    aws_prometheus_workspace.prometheus_eks
-  ]
+  depends_on = [ module.eks ]
 }
 
 provider "helm" {
