@@ -44,6 +44,8 @@ terraform destroy -auto-approve --target module.eks_blueprints_addons.module.kub
 echo "Waiting 30 seconds..."
 sleep 30
 
+# forget about database before destorying the RDS instance
+terraform state rm postgresql_database.additional_db
 # destroy everything else
 until terraform destroy -auto-approve; do
   echo Terraform destroy has failed, retrying in 10 seconds...

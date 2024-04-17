@@ -44,28 +44,25 @@ resource "aws_db_instance" "superset" {
   parameter_group_name   = aws_db_parameter_group.superset.name
   publicly_accessible    = true
   skip_final_snapshot    = true
-
-    depends_on = [ random_password.superset_postgresql_password ]
 }
 
 resource "aws_db_parameter_group" "superset" {
   name   = "superset"
   family = "postgres16"
 
+  # Logs each successful connection.
   parameter {
     name  = "log_connections"
     value = "1"
   }
 }
 
-# # Create Database 
-# resource "postgresql_database" "superset" {
-#     name              = "superset"
-#     owner             = "superset"
-#     template          = "template0"
-#     lc_collate        = "C"
-#     connection_limit  = -1
-#     allow_connections = true
-
-#     depends_on = [aws_db_instance.superset]
-# }
+# Create additional database
+resource "postgresql_database" "additional_db" {
+    name              = "additional_db"
+    owner             = aws_db_instance.superset.username
+    template          = "template0"
+    lc_collate        = "en_US.UTF-8"
+    connection_limit  = -1
+    allow_connections = true
+}

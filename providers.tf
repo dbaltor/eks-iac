@@ -17,10 +17,11 @@ terraform {
       source  = "alekc/kubectl"
       version = ">= 2.0.2"
     }
-    # postgresql = {
-    #   source = "SemMulder/postgresql"
-    #   version = "0.0.6-pre"
-    # }
+    # https://registry.terraform.io/providers/cyrilgdn/postgresql/latest
+    postgresql = {
+      source = "cyrilgdn/postgresql"
+      version = "1.22.0"
+    }
   }
 }
 
@@ -35,12 +36,12 @@ provider "kubectl" {
   }
 }
 
-# provider "postgresql" {
-#   host            = aws_db_instance.superset.endpoint
-#   port            = 5432
-#   database        = "superset"
-#   username        = "superset"
-#   password        = random_password.superset_postgresql_password.result
-#   sslmode         = "require"
-#   connect_timeout = 15
-# }
+provider "postgresql" {
+  host            = aws_db_instance.superset.address
+  port            = aws_db_instance.superset.port
+  database        = aws_db_instance.superset.db_name
+  username        = aws_db_instance.superset.username
+  password        = random_password.superset_postgresql_password.result
+  sslmode         = "require"
+  connect_timeout = 15
+}
