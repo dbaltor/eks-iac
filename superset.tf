@@ -3,17 +3,18 @@
 ################################
 
 resource "aws_secretsmanager_secret" "superset" {
-  name        = "prod/superset"
+  name = "prod/superset"
+  recovery_window_in_days = 0
 }
 
 resource "random_password" "superset_secret_key" {
-  length           = 42
-  special          = false
+  length = 42
+  special = false
 }
 
 resource "random_password" "superset_postgresql_password" {
-  length           = 12
-  special          = false
+  length  = 12
+  special = false
 }
 
 variable "secrets" {

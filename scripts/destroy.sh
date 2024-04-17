@@ -52,6 +52,3 @@ until terraform destroy -auto-approve; do
   sleep 10
 done
 
-# force secret deletion so the name can be immediatelly reused
-AWS_PAGER="" aws secretsmanager delete-secret --secret-id prod/superset --force-delete-without-recovery --region $(aws configure get region)
-
