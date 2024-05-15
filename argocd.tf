@@ -97,3 +97,29 @@ resource "helm_release" "argocd" {
       kubectl_manifest.cmp_plugin,
       aws_acm_certificate.eks_cluster_certificate]
 }
+
+
+# ArgoCD secret
+data "kubernetes_secret" "argocd" {
+  metadata {
+    name      = "argocd-initial-admin-secret"
+    namespace = "argocd"
+  }
+  binary_data = {
+    "password" = ""
+  }
+
+  depends_on = [helm_release.argocd]
+}
+
+resource "aws_secretsmanager_secret" "argocd" {
+  name = "prod/argocd-initial-admin-secret"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "argocd" {
+  secret_id     = aws_secretsmanager_secret.argocd.id
+  secret_string = base64decode(data.kubernetes_secret.argocd.binary_data.password)
+
+  depends_on = [ helm_release.argocd ]
+}
