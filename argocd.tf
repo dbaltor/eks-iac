@@ -87,7 +87,7 @@ resource "helm_release" "argocd" {
   # helm chart version must be < 4 https://github.com/argoproj/argo-cd/issues/16542
   version          = "3.35.4"
   values = [templatefile("argocd/values.yaml", {
-    argocd_image_version = "v2.9.3",
+    argocd_image_version = "v2.11.0",
     region = var.region,
     eks_cluster_certificate_arn = aws_acm_certificate.eks_cluster_certificate.arn,
     argocd_url = "argocd.${var.dns_domain}"
