@@ -37,7 +37,7 @@ repoServer:
       image: registry.access.redhat.com/ubi8
       env:
         - name: AVP_VERSION
-          value: 1.17.0
+          value: "${avp_version}"
       command: [sh, -c]
       args:
         - >-
