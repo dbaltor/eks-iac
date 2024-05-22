@@ -1,16 +1,16 @@
 #!/bin/bash
 ################################################################
-# Run: upgrade.sh <NEW_VER>
-# e.g. upgrade.sh v0.1.4
+# Run: upgrade-apps.sh <NEW_VER>
+# e.g. upgrade-apps.sh v0.1.4
 ################################################################
 
 # exit when any command fails
-set -e
+set -eo pipefail
 
 # Verify if new version was informed
 NEW_VER=$1
 if [[ $# -eq 0 ]]; then
-    read -n 1 -p "No new container tag was informed. Do you wish to continue? " answer
+    read -n 1 -p "No new container tag was informed. Do you wish to continue (y/n)? " answer
     echo
     case ${answer:0:1} in
         y|Y )

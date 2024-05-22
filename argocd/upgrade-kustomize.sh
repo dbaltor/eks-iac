@@ -1,14 +1,18 @@
 #!/bin/bash
+################################################################
+# Run: upgrade-kustomize.sh <APP_NAME> <ENV_NAME> <NEW_VER>
+# e.g. upgrade-kustomize.sh nginx staging v0.1.4
+################################################################
 
 # exit when any command fails
-set -e
+set -eo pipefail
 
 # Verify if new version was informed
 APP_NAME=$1
 ENV=$2
 NEW_VER=$3
 if [[ $# -eq 0 ]]; then
-    read -n 1 -p "Application name, environment, and new version must be informed. Do you wish to continue? " answer
+    read -n 1 -p "Application name, environment, and new version must be informed. Do you wish to continue (y/n)? " answer
     echo
     case ${answer:0:1} in
         y|Y )

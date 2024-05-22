@@ -190,11 +190,11 @@ echo $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.d
 ```
 
 To deploy the applications using ArgoCD, run:  
-`./upgrade-apps.sh <version>`  
-(for my-app-1 and my-app-2)  
+`./argocd/upgrade-apps.sh <version>`  
+(to deploy my-app-1 and my-app-2 to dev using the app of apps pattern)  
   
-`./upgrade-kustomize.sh <name> <env> <version>`  
-(for my-app-3 or my-app-4 into staging or prod)  
+`./argocd/upgrade-kustomize.sh <name> <env> <version>`  
+(to deploy my-app-3 or my-app-4 into staging or prod)  
 
 
 ## Installing ArgoCD Vault Plugin
