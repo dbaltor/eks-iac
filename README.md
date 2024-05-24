@@ -189,12 +189,7 @@ Then open your browse at `http://localhost:8080` and log on with `admin` user. T
 echo $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 ```
 
-To deploy the applications using ArgoCD, run:  
-`./argocd/upgrade-apps.sh <version>`  
-(to deploy my-app-1 and my-app-2 to dev using the app of apps pattern)  
-  
-`./argocd/upgrade-kustomize.sh <name> <env> <version>`  
-(to deploy my-app-3 or my-app-4 into staging or prod)  
+To deploy applications to this cluster using ArgoCD, read the instructions in this [repo](https://github.com/dbaltor/argocd-test).
 
 
 ## Installing ArgoCD Vault Plugin
