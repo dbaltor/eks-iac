@@ -15,7 +15,7 @@ server:
     hosts:
       - "${argocd_url}"
   config:
-    url: "${argocd_url}"
+    url: "https://${argocd_url}"
 
 # If you face issue with ArgoCD CRDs installation, then uncomment below section to disable it
 # crds:
