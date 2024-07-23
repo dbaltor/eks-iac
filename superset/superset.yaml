@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: https://apache.github.io/superset
-    targetRevision: 0.10.15
+    targetRevision: 0.12.11
     chart: superset
     helm:
       version: v3
