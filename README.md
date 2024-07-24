@@ -240,6 +240,12 @@ kubectl get ingress -n superset -o=jsonpath='{.items[].status.loadBalancer.ingre
 You can then point your browser at `https:\\superset.<DNS_DOMAIN>`.  
 Log in with `admin` user and `admin` password.
 
+**N.B.** Run the following command if the example dashboards don't load properly:
+```
+kubectl -n superset exec -it $(kubectl -n superset get pods --no-headers -o custom-columns=":metadata.name" | grep '^superset-.\{10\}-.\{5\}$') -- superset load-examples
+```
+See issue [here](https://github.com/apache/superset/issues/24521).
+
 ### References
 
 #### Superset
