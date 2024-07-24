@@ -17,6 +17,11 @@ resource "random_password" "superset_postgresql_password" {
   special = false
 }
 
+resource "random_password" "superset_admin_password" {
+  length  = 12
+  special = false
+}
+
 variable "secrets" {
   type = map(string)
   default = {}
@@ -28,6 +33,7 @@ locals {
     {
       secret-key = random_password.superset_secret_key.result
       postgresql-password = random_password.superset_postgresql_password.result
+      admin-password = random_password.superset_admin_password.result
       smtp-password = var.smtp_password
       alb-cert-arn = aws_acm_certificate.eks_cluster_certificate.arn
     }
