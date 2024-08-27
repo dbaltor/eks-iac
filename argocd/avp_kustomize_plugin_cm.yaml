@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: avp-kustomize-plugin-cm
+  namespace: argocd
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: argocd-vault-plugin-kustomize
+    spec:
+      allowConcurrency: true
+      discover:
+        find:
+          command:
+            - find
+            - "."
+            - -name
+            - kustomization.yaml
+      generate:
+        command:
+          - sh
+          - "-c"
+          - "kustomize build . | argocd-vault-plugin generate -"
+      lockRepo: false

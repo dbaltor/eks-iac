@@ -35,45 +35,26 @@ resource "kubernetes_namespace" "argocd" {
 # ArgoCD Vault Plugin configmap configuration
 # See Usage -> ArgoCD -> With Helm and With additional Helm arguments
 # https://argocd-vault-plugin.readthedocs.io/en/stable/usage/
-resource "kubectl_manifest" "cmp_plugin" {
-  yaml_body = <<-YAML
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cmp-plugin
-  namespace: argocd
-data:
-  plugin.yaml: |
-    apiVersion: argoproj.io/v1alpha1
-    kind: ConfigManagementPlugin
-    metadata:
-      name: argocd-vault-plugin-helm
-    spec:
-      allowConcurrency: true
-      discover:
-        find:
-          command:
-            - sh
-            - "-c"
-            - "find . -name 'Chart.yaml' && find . -name 'values.yaml'"
-      init:
-       command:
-          - bash
-          - "-c"
-          - |
-            helm repo add bitnami https://charts.bitnami.com/bitnami
-            helm dependency build
-      generate:
-        command:
-          - bash
-          - "-c"
-          - |
-            helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE -f <(echo "$ARGOCD_ENV_HELM_VALUES") . |
-            argocd-vault-plugin generate -
-      lockRepo: false
-  YAML
+resource "kubectl_manifest" "avp_helm_plugin_cm" {
+  yaml_body = file("${path.root}/argocd/avp_helm_plugin_cm.yaml")
 
-  depends_on = [kubernetes_namespace.argocd]
+  force_new = true
+  wait = true
+
+  depends_on = [
+    kubernetes_namespace.argocd
+  ]
+}
+
+resource "kubectl_manifest" "avp_kustomize_plugin_cm" {
+  yaml_body = file("${path.root}/argocd/avp_kustomize_plugin_cm.yaml")
+
+  force_new = true
+  wait = true
+
+  depends_on = [
+    kubernetes_namespace.argocd
+  ]
 }
 
 # ArgoCD helm chart
@@ -95,7 +76,8 @@ resource "helm_release" "argocd" {
   })]
 
     depends_on = [
-      kubectl_manifest.cmp_plugin,
+      kubectl_manifest.avp_helm_plugin_cm,
+      kubectl_manifest.avp_kustomize_plugin_cm,
       aws_acm_certificate.eks_cluster_certificate]
 }
 

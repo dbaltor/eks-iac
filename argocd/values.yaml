@@ -67,14 +67,40 @@ repoServer:
         - mountPath: /tmp
           name: cmp-tmp
         - mountPath: /home/argocd/cmp-server/config
-          name: cmp-plugin
+          name: helm-plugin
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
+    - name: avp-kustomize
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: quay.io/argoproj/argocd:${argocd_image_version}
+      env:
+        - name: AWS_REGION
+          value: "${region}"
+        - name: AVP_TYPE
+          value: awssecretsmanager
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /tmp
+          name: cmp-tmp
+        - mountPath: /home/argocd/cmp-server/config
+          name: kustomize-plugin
         - name: custom-tools
           subPath: argocd-vault-plugin
           mountPath: /usr/local/bin/argocd-vault-plugin
   volumes:
-    - configMap:
-        name: cmp-plugin
-      name: cmp-plugin
+    - name: helm-plugin
+      configMap:
+        name: avp-helm-plugin-cm
+    - name: kustomize-plugin
+      configMap:
+        name: avp-kustomize-plugin-cm
     - name: custom-tools
       emptyDir: {}
     - name: cmp-tmp

@@ -55,7 +55,7 @@ resource "kubernetes_namespace" "superset" {
     name = "superset"
   }
 
-  depends_on = [module.eks]
+  depends_on = [ helm_release.argocd ]
 }
 
 # Superset helm chart
@@ -91,7 +91,6 @@ resource "kubectl_manifest" "superset_helm" {
 
   depends_on = [
     kubernetes_namespace.superset,
-    helm_release.argocd,
     aws_db_instance.superset,
     aws_acm_certificate.eks_cluster_certificate,
     # kubernetes_secret.superset_ingress_tls
