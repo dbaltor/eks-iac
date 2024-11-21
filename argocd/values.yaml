@@ -1,21 +1,27 @@
 global:
   image:
     tag: "${argocd_image_version}"
+  domain: "${argocd_url}"
 
+configs:
+  params:
+      server.insecure: true
 server:
-  extraArgs:
-    - --insecure
+  # https://artifacthub.io/packages/helm/argo/argo-cd#aws-application-load-balancer
   ingress:
     enabled: true
-    annotations:
-      alb.ingress.kubernetes.io/target-type: ip
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/certificate-arn: "${eks_cluster_certificate_arn}"
+    controller: aws
     ingressClassName: alb
-    hosts:
-      - "${argocd_url}"
-  config:
-    url: "https://${argocd_url}"
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/certificate-arn: "${eks_cluster_certificate_arn}"
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80}, {"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: '443'
+    aws:
+      serviceType: ClusterIP # <- Used with target-type: ip
+      backendProtocolVersion: GRPC
 
 # If you face issue with ArgoCD CRDs installation, then uncomment below section to disable it
 # crds:
