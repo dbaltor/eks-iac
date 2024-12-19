@@ -35,7 +35,7 @@ resource "aws_db_instance" "superset" {
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
-  engine_version         = "16.1"
+  engine_version         = "16.3"
   db_name                = "superset"
   username               = "superset"
   password               = random_password.superset_postgresql_password.result
